@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>定期定額複利計算</title>
+    <style>
+        :root {
+            --bg: #E9EEEC;
+            --surface: #FFFFFF;
+            --ink: #1F2A36;
+            --muted: #5D6B78;
+            --line: #CBD5D2;
+            --jade: #2E7D6B;
+            --jade-soft: #DCEDE7;
+            --gold: #A67C00;
+            --error: #B3261E;
+            color-scheme: light;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #141B21;
+                --surface: #1D262E;
+                --ink: #E6ECEA;
+                --muted: #9AA8B3;
+                --line: #33414C;
+                --jade: #5FBFA6;
+                --jade-soft: #20352F;
+                --gold: #E0B84A;
+                --error: #F2867E;
+                color-scheme: dark;
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #141B21;
+            --surface: #1D262E;
+            --ink: #E6ECEA;
+            --muted: #9AA8B3;
+            --line: #33414C;
+            --jade: #5FBFA6;
+            --jade-soft: #20352F;
+            --gold: #E0B84A;
+            --error: #F2867E;
+            color-scheme: dark;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.6;
+            font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+        }
+
+        main {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 2.5rem 1.25rem 3rem;
+        }
+
+        h1 {
+            font-size: clamp(1.75rem, 5vw, 2.25rem);
+            margin: 0 0 .5rem;
+        }
+
+        .intro {
+            color: var(--muted);
+            margin: 0 0 2rem;
+        }
+
+        .container-input,
+        .container-output {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+
+        .container-output {
+            margin-top: 1.25rem;
+            border-left: 6px solid var(--jade);
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            margin: 0 0 1rem;
+        }
+
+        .field {
+            display: grid;
+            grid-template-columns: 6rem 1fr;
+            align-items: center;
+            gap: .75rem;
+            padding: .6rem 0;
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .field label {
+            font-weight: 600;
+        }
+
+        .unit-box {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .unit-box span {
+            color: var(--muted);
+            min-width: 2rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            font: inherit;
+            font-size: 1.05rem;
+            padding: .6rem .8rem;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--ink);
+            text-align: right;
+        }
+
+        input[type="number"]:focus {
+            outline: 3px solid var(--jade-soft);
+            border-color: var(--jade);
+        }
+
+        input[aria-invalid="true"] {
+            border-color: var(--error);
+        }
+
+        .error {
+            color: var(--error);
+            font-size: .9rem;
+            min-height: 1.4em;
+            margin: .5rem 0 0;
+        }
+
+        button {
+            width: 100%;
+            font: inherit;
+            font-weight: 700;
+            padding: .75rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            background: var(--jade);
+            color: var(--surface);
+            cursor: pointer;
+        }
+
+        button:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        .empty {
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .formula {
+            background: var(--jade-soft);
+            border-radius: 10px;
+            padding: 1rem;
+            overflow-x: auto;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .formula .label {
+            display: block;
+            font-size: .85rem;
+            color: var(--muted);
+            white-space: normal;
+        }
+
+        .summary {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.25rem;
+        }
+
+        .summary td {
+            padding: .4rem 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .summary td:last-child {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .summary tr.total td {
+            border-bottom: none;
+            padding-top: .8rem;
+        }
+
+        .result {
+            font-size: clamp(1.6rem, 7vw, 2.4rem);
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .note {
+            color: var(--muted);
+            font-size: .85rem;
+            margin: .75rem 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>定期定額複利計算</h1>
+        <p class="intro">輸入每月投入金額、投資年數與年化報酬率，計算到期後的總金額。</p>
+
+        <section class="container-input">
+            <h2>投資條件</h2>
+            <form id="dca-form" novalidate>
+                <div class="field">
+                    <label for="monthly">1. 月投入</label>
+                    <div class="unit-box"><input type="number" id="monthly" min="0" step="1"
+                            placeholder="10000"><span>元</span></div>
+                </div>
+                <div class="field">
+                    <label for="years">2. 多少年</label>
+                    <div class="unit-box"><input type="number" id="years" min="1" step="1"
+                            placeholder="7"><span>年</span></div>
+                </div>
+                <div class="field">
+                    <label for="rate">3. 年化 %</label>
+                    <div class="unit-box"><input type="number" id="rate" min="0" step="0.1"
+                            placeholder="10"><span>%</span></div>
+                </div>
+                <p class="error" id="error" role="alert"></p>
+                <button type="submit">計算結果</button>
+            </form>
+        </section>
+
+        <section class="container-output" id="output" aria-live="polite">
+            <h2>計算結果</h2>
+            <p class="empty">填入三個欄位後按「計算結果」，公式與金額會顯示在這裡。</p>
+        </section>
+    </main>
+
+    <script>
+        const form = document.getElementById("dca-form");
+        const output = document.getElementById("output");
+        const errorBox = document.getElementById("error");
+        const fmt = n => Math.round(n).toLocaleString("zh-TW");
+
+        function readField(id, min) {
+            const input = document.getElementById(id);
+            const val = Number(input.value);
+            const bad = input.value.trim() === "" || Number.isNaN(val) || val < min;
+            input.setAttribute("aria-invalid", bad ? "true" : "false");
+            return bad ? null : val;
+        }
+
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            const monthly = readField("monthly", 1);
+            const years = readField("years", 1);
+            const rate = readField("rate", 0);
+
+            if (monthly === null || years === null || rate === null) {
+                errorBox.textContent = "請確認：月投入至少 1 元、年數至少 1 年、年化報酬率不可為負數。";
+                return;
+            }
+            errorBox.textContent = "";
+
+            const n = Math.round(years * 12);   // 總期數（月）
+            const r = rate / 100 / 12;          // 月利率
+            const principal = monthly * n;      // 總投入本金
+            const factor = r === 0 ? n : (Math.pow(1 + r, n) - 1) / r;
+            const total = monthly * factor;     // 期末金額（每月月底投入）
+            const profit = total - principal;
+            const rStr = r === 0 ? "0" : (rate / 100 / 12).toFixed(6);
+
+            output.innerHTML = `
+      <h2>計算結果</h2>
+      <div class="formula">
+        <span class="label">公式：月投入 × [(1 + 月利率)<sup>期數</sup> − 1] ÷ 月利率</span>
+        月利率 = ${rate}% ÷ 12 = ${rStr}，期數 = ${years} × 12 = ${n} 期<br>
+        = ${fmt(monthly)} × [(1 + ${rStr})<sup>${n}</sup> − 1] ÷ ${rStr}<br>
+        = ${fmt(monthly)} × ${factor.toFixed(4)}<br>
+        = ${fmt(total)}
+      </div>
+      <table class="summary">
+        <tr><td>總投入本金（${fmt(monthly)} × ${n} 期）</td><td>NT$ ${fmt(principal)}</td></tr>
+        <tr><td>複利獲利</td><td>NT$ ${fmt(profit)}</td></tr>
+        <tr class="total"><td>${years} 年後總金額</td><td class="result">NT$ ${fmt(total)}</td></tr>
+      </table>
+      <p class="note">以每月複利、每月月底投入計算，未計入手續費、稅與通膨。</p>
+    `;
+        });
+    </script>
+</body>
+
+</html>

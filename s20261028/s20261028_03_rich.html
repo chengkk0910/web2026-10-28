@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>財務安全數字計算</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #E9EEEC;
+            --surface: #FFFFFF;
+            --ink: #1F2A36;
+            --muted: #5D6B78;
+            --line: #CBD5D2;
+            --jade: #2E7D6B;
+            --jade-soft: #DCEDE7;
+            --gold: #A67C00;
+            --error: #B3261E;
+            color-scheme: light;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #141B21;
+                --surface: #1D262E;
+                --ink: #E6ECEA;
+                --muted: #9AA8B3;
+                --line: #33414C;
+                --jade: #5FBFA6;
+                --jade-soft: #20352F;
+                --gold: #E0B84A;
+                --error: #F2867E;
+                color-scheme: dark;
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #141B21;
+            --surface: #1D262E;
+            --ink: #E6ECEA;
+            --muted: #9AA8B3;
+            --line: #33414C;
+            --jade: #5FBFA6;
+            --jade-soft: #20352F;
+            --gold: #E0B84A;
+            --error: #F2867E;
+            color-scheme: dark;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+            line-height: 1.6;
+        }
+
+        main {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 2.5rem 1.25rem 3rem;
+        }
+
+        h1 {
+            font-family: "Noto Serif TC", "PMingLiU", serif;
+            font-weight: 900;
+            font-size: clamp(1.75rem, 5vw, 2.25rem);
+            margin: 0 0 .5rem;
+            letter-spacing: .02em;
+        }
+
+        .intro {
+            color: var(--muted);
+            margin: 0 0 2rem;
+        }
+
+        .container-input,
+        .container-output {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+
+        .container-output {
+            margin-top: 1.25rem;
+            border-left: 6px solid var(--jade);
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            margin: 0 0 1rem;
+            font-weight: 700;
+        }
+
+        .field {
+            display: grid;
+            grid-template-columns: 4.5rem 1fr;
+            align-items: center;
+            gap: .75rem;
+            padding: .6rem 0;
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .field:last-of-type {
+            border-bottom: none;
+        }
+
+        .field label {
+            font-weight: 500;
+        }
+
+        .field label .hint {
+            display: block;
+            font-size: .78rem;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .money {
+            position: relative;
+        }
+
+        .money span {
+            position: absolute;
+            left: .8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: .9rem;
+            pointer-events: none;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            font: inherit;
+            font-size: 1.05rem;
+            padding: .6rem .8rem .6rem 3rem;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--ink);
+            text-align: right;
+        }
+
+        input[type="number"]:focus {
+            outline: 3px solid var(--jade-soft);
+            border-color: var(--jade);
+        }
+
+        input[aria-invalid="true"] {
+            border-color: var(--error);
+        }
+
+        .error {
+            color: var(--error);
+            font-size: .9rem;
+            min-height: 1.4em;
+            margin: .5rem 0 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: .75rem;
+            margin-top: .75rem;
+        }
+
+        button {
+            font: inherit;
+            font-weight: 700;
+            padding: .75rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid var(--jade);
+            cursor: pointer;
+        }
+
+        button[type="submit"] {
+            flex: 1;
+            background: var(--jade);
+            color: var(--surface);
+        }
+
+        button[type="reset"] {
+            background: transparent;
+            color: var(--jade);
+        }
+
+        button:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        .empty {
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .breakdown {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.25rem;
+        }
+
+        .breakdown td {
+            padding: .35rem 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .breakdown td:last-child {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .breakdown tr.total td {
+            font-weight: 700;
+            border-bottom: none;
+            padding-top: .6rem;
+        }
+
+        .formula {
+            background: var(--jade-soft);
+            border-radius: 10px;
+            padding: 1rem;
+            font-variant-numeric: tabular-nums;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .formula .label {
+            display: block;
+            font-size: .85rem;
+            color: var(--muted);
+            white-space: normal;
+        }
+
+        .formula .expr {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .result-line {
+            margin-top: 1.25rem;
+        }
+
+        .result-line .label {
+            color: var(--muted);
+            font-size: .95rem;
+        }
+
+        .result {
+            display: block;
+            font-family: "Noto Serif TC", "PMingLiU", serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 9vw, 3rem);
+            color: var(--gold);
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+            word-break: break-all;
+        }
+
+        .note {
+            color: var(--muted);
+            font-size: .9rem;
+            margin: .75rem 0 0;
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .container-output.updated {
+                animation: flash .6s ease-out;
+            }
+
+            @keyframes flash {
+                from {
+                    background: var(--jade-soft);
+                }
+
+                to {
+                    background: var(--surface);
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>財務安全數字</h1>
+        <p class="intro">輸入每月在食、衣、住、行與其他的支出，算出足以支撐十年生活的金額。</p>
+
+        <section class="container-input">
+            <h2>每月支出</h2>
+            <form id="expense-form" novalidate>
+                <div class="field">
+                    <label for="food">1. 食<span class="hint">餐費、食材</span></label>
+                    <div class="money"><span>NT$</span><input type="number" id="food" name="food" min="0" step="1"
+                            inputmode="numeric" placeholder="0"></div>
+                </div>
+                <div class="field">
+                    <label for="clothing">2. 衣<span class="hint">服飾、保養</span></label>
+                    <div class="money"><span>NT$</span><input type="number" id="clothing" name="clothing" min="0"
+                            step="1" inputmode="numeric" placeholder="0"></div>
+                </div>
+                <div class="field">
+                    <label for="housing">3. 住<span class="hint">房租、房貸、水電</span></label>
+                    <div class="money"><span>NT$</span><input type="number" id="housing" name="housing" min="0" step="1"
+                            inputmode="numeric" placeholder="0"></div>
+                </div>
+                <div class="field">
+                    <label for="transport">4. 行<span class="hint">交通、油資</span></label>
+                    <div class="money"><span>NT$</span><input type="number" id="transport" name="transport" min="0"
+                            step="1" inputmode="numeric" placeholder="0"></div>
+                </div>
+                <div class="field">
+                    <label for="other">5. 其他<span class="hint">娛樂、保險、雜支</span></label>
+                    <div class="money"><span>NT$</span><input type="number" id="other" name="other" min="0" step="1"
+                            inputmode="numeric" placeholder="0"></div>
+                </div>
+                <p class="error" id="error" role="alert"></p>
+                <div class="actions">
+                    <button type="reset">清除</button>
+                    <button type="submit">計算財務安全數字</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="container-output" id="output" aria-live="polite">
+            <h2>計算結果</h2>
+            <p class="empty">填入每月支出後按「計算財務安全數字」，結果會顯示在這裡。</p>
+        </section>
+    </main>
+
+    <script>
+        const items = [
+            { id: "food", name: "食" },
+            { id: "clothing", name: "衣" },
+            { id: "housing", name: "住" },
+            { id: "transport", name: "行" },
+            { id: "other", name: "其他" }
+        ];
+        const form = document.getElementById("expense-form");
+        const output = document.getElementById("output");
+        const errorBox = document.getElementById("error");
+        const fmt = n => n.toLocaleString("zh-TW");
+        const emptyHTML = output.innerHTML;
+
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            errorBox.textContent = "";
+            let invalid = [];
+            const values = items.map(item => {
+                const input = document.getElementById(item.id);
+                const raw = input.value.trim();
+                const val = raw === "" ? 0 : Number(raw);
+                const bad = Number.isNaN(val) || val < 0;
+                input.setAttribute("aria-invalid", bad ? "true" : "false");
+                if (bad) invalid.push(item.name);
+                return { ...item, value: bad ? 0 : val };
+            });
+
+            if (invalid.length) {
+                errorBox.textContent = `「${invalid.join("、")}」需要輸入 0 以上的數字。`;
+                return;
+            }
+
+            const monthly = values.reduce((sum, v) => sum + v.value, 0);
+            if (monthly === 0) {
+                errorBox.textContent = "請至少輸入一項大於 0 的支出。";
+                return;
+            }
+            const yearly = monthly * 12;
+            const safety = yearly * 10;
+
+            const rows = values.map(v => `<tr><td>${v.name}</td><td>NT$ ${fmt(v.value)}</td></tr>`).join("");
+            const sumExpr = values.map(v => fmt(v.value)).join(" + ");
+
+            output.innerHTML = `
+      <h2>計算結果</h2>
+      <table class="breakdown">
+        ${rows}
+        <tr class="total"><td>每月總支出</td><td>NT$ ${fmt(monthly)}</td></tr>
+      </table>
+      <div class="formula">
+        <span class="label">公式：每月總支出 × 12 個月 × 10 年</span>
+        <span class="expr">(${sumExpr}) × 12 × 10</span><br>
+        <span class="expr">= ${fmt(monthly)} × 12 × 10</span><br>
+        <span class="expr">= ${fmt(yearly)} × 10</span>
+      </div>
+      <div class="result-line">
+        <span class="label">你的財務安全數字</span>
+        <span class="result">NT$ ${fmt(safety)}</span>
+      </div>
+      <p class="note">也就是不工作也能維持目前生活水準 10 年所需的金額（每年支出 NT$ ${fmt(yearly)}）。</p>
+    `;
+            output.classList.remove("updated");
+            void output.offsetWidth;
+            output.classList.add("updated");
+        });
+
+        form.addEventListener("reset", () => {
+            errorBox.textContent = "";
+            items.forEach(i => document.getElementById(i.id).setAttribute("aria-invalid", "false"));
+            output.innerHTML = emptyHTML;
+        });
+    </script>
+</body>
+
+</html>

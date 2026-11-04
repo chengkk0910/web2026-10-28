@@ -14,12 +14,24 @@
             color: lightpink;
         }
 
+
+
+        /* 少用 空格 */
+        .p1 div {
+            color: lightslategray;
+        }
+
         .p1>div {
             color: lightgreen;
         }
 
         .p2>div {
             color: lightcoral;
+        }
+
+        /* + 很少用 */
+        .p1+div {
+            color: blueviolet;
         }
 
         /* 劉備 兄弟姊妹層 */
@@ -31,11 +43,31 @@
 
 <body>
     <!-- 組合選擇器 -->
+    <!-- > ~ -->
+    <!-- 最常用 > -->
+    <!-- class id  -->
+
+    <!-- 複習一下 -->
+    <!-- 空格 少用 打錯了 後代全部 -->
+    <!-- + 少用 -->
+    <!-- - 沒有這個 -->
+    <!-- * 萬用字元 -->
+    <!-- / 沒有 -->
+    <!-- + 相鄰 少用 -->
+    <!-- ~ 同一層 -->
+    <!-- > 下一層 -->
+    <!-- # id -->
+    <!-- . class -->
+    <!-- , 兩個都有 -->
 
     <div class="parent-div p1">
         劉備
         <div class="child-div c11">&nbsp;&nbsp;&nbsp;&nbsp;劉封</div>
-        <div class="child-div c12">&nbsp;&nbsp;&nbsp;&nbsp;劉禪</div>
+        <div class="child-div c12">&nbsp;&nbsp;&nbsp;&nbsp;劉禪
+            <div class="child-child-div">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;劉31</div>
+            <div class="child-child-div">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;劉32</div>
+        </div>
+
     </div>
 
     <div class="parent-div p2">

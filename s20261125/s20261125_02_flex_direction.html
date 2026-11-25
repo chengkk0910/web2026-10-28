@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            width: 500px;
+            height: 1200px;
+            background-color: lightblue;
+            margin: auto;
+
+            /* 
+                1.宣告 flex
+                垂直的
+                2.主軸 置中 分散
+                3.次軸 垂直置中
+            */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            /* justify-content: space-around; */
+            align-items: center;
+
+        }
+
+        .item {
+            width: 300px;
+            height: 300px;
+            background-color: #ccc;
+            /* margin-left: 130px; */
+
+            /* display: inline-block;
+            margin-left: 30px; */
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="item"></div>
+        <div class="item"></div>
+        <div class="item"></div>
+    </div>
+</body>
+
+</html>

@@ -42,6 +42,45 @@
     border-right: 0px;
 }
 
+/* menu-container */
+.menu-title{
+    font-family: '標楷體';
+    font-size: 24px;
+    color: #FF00FF;
+    text-align: center;
+    border-bottom: 1px solid black;
+    width: 50%;
+    margin: auto;
+    /* background-color: lightblue; */
+}
+
+.menu-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* menu */
+.menu {
+    width: 200px;
+    height: 35px;
+    background-color: lightblue;
+    background-image: url('../images/menu1.png');
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 6px;
+    font-family: '標楷體';
+    color: #000000;
+    font-weight: 500;
+}
+
+.menu:hover{
+    background-image: url('../images/menu2.png');
+}
+
 /* left-bottom */
 .container-left>.left-bottom {
     /* width: 215px; */

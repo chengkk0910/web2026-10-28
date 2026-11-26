@@ -43,7 +43,7 @@
 }
 
 /* menu-container */
-.menu-title{
+.menu-title {
     font-family: '標楷體';
     font-size: 24px;
     color: #FF00FF;
@@ -54,7 +54,7 @@
     /* background-color: lightblue; */
 }
 
-.menu-container{
+.menu-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -77,7 +77,7 @@
     font-weight: 500;
 }
 
-.menu:hover{
+.menu:hover {
     background-image: url('../images/menu2.png');
 }
 
@@ -89,6 +89,13 @@
     border: 1px solid black;
     border-top: 0px;
     border-right: 0px;
+}
+
+.update {
+    font-family: '標楷體';
+    text-align: center;
+    font-size: 16px;
+    color: #000000;
 }
 
 /* right */

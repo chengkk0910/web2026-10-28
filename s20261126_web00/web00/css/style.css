@@ -1,0 +1,33 @@
+* {
+    box-sizing: border-box;
+    /* 超出格子的部分都隱藏 */
+    overflow: hidden;
+}
+
+/* header */
+.header {
+    width: 1024px;
+    height: 65px;
+    background-color: lightblue;
+    /* border: 1px solid black; */
+    margin: auto;
+}
+
+/* container */
+.container {
+    width: 1024px;
+    /* 數字跟px 不能有空格 , - 前後必須有空格  */
+    height: calc(768px - 65px - 20px);
+    background-color: lightpink;
+    /* border: 1px solid black; */
+    margin: auto;
+}
+
+/* footer */
+.footer {
+    width: 1024px;
+    height: 20px;
+    background-color: lightyellow;
+    /* border: 1px solid black; */
+    margin: auto;
+}

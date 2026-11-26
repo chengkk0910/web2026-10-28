@@ -26,14 +26,44 @@
 
 }
 
+/* left */
 .container>.container-left {
     width: 215px;
     background-color: lightcoral;
 }
 
+/* left-top */
+.container-left>.left-top {
+    /* width: 215px; */
+    height: calc(100% - 25px);
+    background-color: lightskyblue;
+}
+
+/* left-bottom */
+.container-left>.left-bottom {
+    /* width: 215px; */
+    height: 25px;
+    background-color: darkblue;
+}
+
+/* right */
 .container>.container-right {
     /* 小心 不是 770px */
     width: calc(100% - 215px);
+    background-color: darkred;
+}
+
+/* right-top */
+.container-right>.right-top {
+    /* width: 215px; */
+    height: 29px;
+    background-color: lightpink;
+}
+
+/* right-bottom */
+.container-right>.right-bottom {
+    /* width: 215px; */
+    height: calc(100% - 29px);
     background-color: darkred;
 }
 

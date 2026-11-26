@@ -21,6 +21,20 @@
     background-color: lightpink;
     /* border: 1px solid black; */
     margin: auto;
+
+    display: flex;
+
+}
+
+.container>.container-left {
+    width: 215px;
+    background-color: lightcoral;
+}
+
+.container>.container-right {
+    /* 小心 不是 770px */
+    width: calc(100% - 215px);
+    background-color: darkred;
 }
 
 /* footer */

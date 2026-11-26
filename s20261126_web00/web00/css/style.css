@@ -87,3 +87,9 @@
     border: 1px solid black;
     border-top: 0px;
 }
+
+marquee {
+    font-size: 24px;
+    color: #0000FF;
+    font-family: "標楷體";
+}
